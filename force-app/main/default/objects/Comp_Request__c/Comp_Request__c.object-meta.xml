@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Tracks casino comp requests submitted by guests with automatic approval logic for amounts under $5000 and manager review for larger amounts</description>
+    <enableActivities>true</enableActivities>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <label>Comp Request</label>
+    <nameField>
+        <displayFormat>CR-{0000}</displayFormat>
+        <label>Request Number</label>
+        <startingNumber>1</startingNumber>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Comp Requests</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+    <fields>
+        <fullName>Guest__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The guest requesting the comp</description>
+        <externalId>false</externalId>
+        <label>Guest</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Comp Requests</relationshipLabel>
+        <relationshipName>Comp_Requests</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Request_Type__c</fullName>
+        <description>Type of comp being requested</description>
+        <externalId>false</externalId>
+        <label>Request Type</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Room Upgrade</fullName>
+                    <default>false</default>
+                    <label>Room Upgrade</label>
+                </value>
+                <value>
+                    <fullName>Dining</fullName>
+                    <default>false</default>
+                    <label>Dining</label>
+                </value>
+                <value>
+                    <fullName>Show Tickets</fullName>
+                    <default>false</default>
+                    <label>Show Tickets</label>
+                </value>
+                <value>
+                    <fullName>Spa Services</fullName>
+                    <default>false</default>
+                    <label>Spa Services</label>
+                </value>
+                <value>
+                    <fullName>Gaming Credits</fullName>
+                    <default>false</default>
+                    <label>Gaming Credits</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Comp_Amount__c</fullName>
+        <description>Dollar value of the comp being requested</description>
+        <externalId>false</externalId>
+        <label>Comp Amount</label>
+        <precision>10</precision>
+        <required>true</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <description>Current status of the comp request</description>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Draft</fullName>
+                    <default>true</default>
+                    <label>Draft</label>
+                </value>
+                <value>
+                    <fullName>Submitted</fullName>
+                    <default>false</default>
+                    <label>Submitted</label>
+                </value>
+                <value>
+                    <fullName>Auto-Approved</fullName>
+                    <default>false</default>
+                    <label>Auto-Approved</label>
+                </value>
+                <value>
+                    <fullName>Pending Manager Review</fullName>
+                    <default>false</default>
+                    <label>Pending Manager Review</label>
+                </value>
+                <value>
+                    <fullName>Approved</fullName>
+                    <default>false</default>
+                    <label>Approved</label>
+                </value>
+                <value>
+                    <fullName>Denied</fullName>
+                    <default>false</default>
+                    <label>Denied</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Comments__c</fullName>
+        <description>Additional notes or justification for the comp request</description>
+        <externalId>false</externalId>
+        <label>Comments</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Flagged_for_Manager_Review__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Indicates if the request requires manager review due to high amount</description>
+        <externalId>false</externalId>
+        <label>Flagged for Manager Review</label>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Requesting_User__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>User who submitted the comp request</description>
+        <externalId>false</externalId>
+        <label>Requesting User</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Comp_Requests</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Manager__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Manager of the requesting user for approval</description>
+        <externalId>false</externalId>
+        <label>Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Managed_Comp_Requests</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Submission_Date__c</fullName>
+        <description>Date and time when the request was submitted</description>
+        <externalId>false</externalId>
+        <label>Submission Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>DateTime</type>
+    </fields>
+</CustomObject>

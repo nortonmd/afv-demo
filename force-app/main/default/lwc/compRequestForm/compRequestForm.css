@@ -1,0 +1,243 @@
+/* Container */
+.comp-request-container {
+    max-width: 480px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, #1B1464 0%, #2E1F7D 100%);
+    min-height: 100vh;
+    padding: 0;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+}
+
+/* Header */
+.header {
+    padding: 1.5rem 1.5rem 1rem;
+    color: white;
+}
+
+.header-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    color: white;
+}
+
+/* Progress Section */
+.progress-section {
+    padding: 0 1.5rem 1.5rem;
+}
+
+.step-indicator {
+    color: white;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+}
+
+/* Form Card */
+.form-card {
+    background: white;
+    border-radius: 24px 24px 0 0;
+    padding: 2rem 1.5rem;
+    min-height: calc(100vh - 200px);
+}
+
+/* Illustration */
+.illustration-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+/* Form Fields */
+.form-field {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #3E3E3C;
+    margin-bottom: 0.5rem;
+}
+
+.custom-input {
+    width: 100%;
+}
+
+/* Guest Dropdown */
+.dropdown-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #DDDBDA;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    margin-top: 0.25rem;
+}
+
+.dropdown-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #F3F2F2;
+}
+
+.dropdown-item:hover {
+    background-color: #F3F3F3;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.guest-name {
+    font-weight: 600;
+    color: #181818;
+    margin-bottom: 0.25rem;
+}
+
+.guest-detail {
+    font-size: 0.75rem;
+    color: #706E6B;
+}
+
+/* Section Title */
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #181818;
+    margin: 0 0 1.5rem 0;
+}
+
+/* Summary Section */
+.summary-section {
+    background: #F3F3F3;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #DDDBDA;
+}
+
+.summary-row:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.summary-row.highlight {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 2px solid #1B96FF;
+}
+
+.summary-row.full-width {
+    flex-direction: column;
+}
+
+.summary-label {
+    font-weight: 600;
+    color: #706E6B;
+    font-size: 0.875rem;
+}
+
+.summary-value {
+    font-weight: 600;
+    color: #181818;
+    font-size: 1rem;
+    text-align: right;
+}
+
+.summary-value.amount {
+    color: #1B96FF;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.full-width .summary-value {
+    margin-top: 0.5rem;
+    text-align: left;
+}
+
+/* Warning Box */
+.warning-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    background: #FEF7E6;
+    border: 1px solid #F9C245;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.warning-text {
+    color: #4F2C00;
+    font-size: 0.875rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Buttons */
+.button-container {
+    margin-top: 2rem;
+}
+
+.button-container-horizontal {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.submit-button {
+    width: 100%;
+    height: 48px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 24px;
+}
+
+.secondary-button {
+    flex: 1;
+    height: 48px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 24px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+    .header-title {
+        font-size: 1.75rem;
+    }
+    
+    .form-card {
+        border-radius: 20px 20px 0 0;
+        padding: 1.5rem 1rem;
+    }
+}
+
+/* Touch Targets for Mobile */
+@media (hover: none) {
+    .dropdown-item {
+        min-height: 48px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}

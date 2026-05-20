@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Object used to track guest activities during their resort stay, including dining, spa treatments, excursions, and other resort amenities usage.</description>
+    <enableActivities>true</enableActivities>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <label>Stay Activity</label>
+    <nameField>
+        <displayFormat>SA-{0000}</displayFormat>
+        <label>Activity Number</label>
+        <startingNumber>1</startingNumber>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Stay Activities</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+    <fields>
+        <fullName>Guest__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The guest who participated in this activity</description>
+        <externalId>false</externalId>
+        <label>Guest</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Stay Activities</relationshipLabel>
+        <relationshipName>Stay_Activities</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Activity_Type__c</fullName>
+        <description>Type of activity the guest participated in</description>
+        <externalId>false</externalId>
+        <label>Activity Type</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Dining</fullName>
+                    <default>false</default>
+                    <label>Dining</label>
+                </value>
+                <value>
+                    <fullName>Spa Treatment</fullName>
+                    <default>false</default>
+                    <label>Spa Treatment</label>
+                </value>
+                <value>
+                    <fullName>Pool &amp; Beach</fullName>
+                    <default>false</default>
+                    <label>Pool &amp; Beach</label>
+                </value>
+                <value>
+                    <fullName>Fitness Center</fullName>
+                    <default>false</default>
+                    <label>Fitness Center</label>
+                </value>
+                <value>
+                    <fullName>Excursion</fullName>
+                    <default>false</default>
+                    <label>Excursion</label>
+                </value>
+                <value>
+                    <fullName>Entertainment</fullName>
+                    <default>false</default>
+                    <label>Entertainment</label>
+                </value>
+                <value>
+                    <fullName>Concierge Service</fullName>
+                    <default>false</default>
+                    <label>Concierge Service</label>
+                </value>
+                <value>
+                    <fullName>Room Service</fullName>
+                    <default>false</default>
+                    <label>Room Service</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Activity_Date_Time__c</fullName>
+        <description>Date and time when the activity occurred</description>
+        <externalId>false</externalId>
+        <label>Activity Date &amp; Time</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Activity_Name__c</fullName>
+        <description>Specific name or description of the activity</description>
+        <externalId>false</externalId>
+        <label>Activity Name</label>
+        <length>255</length>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Duration_Minutes__c</fullName>
+        <description>Duration of the activity in minutes</description>
+        <externalId>false</externalId>
+        <label>Duration (Minutes)</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Cost__c</fullName>
+        <description>Cost charged for this activity</description>
+        <externalId>false</externalId>
+        <label>Cost</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Location__c</fullName>
+        <description>Location within the resort where the activity took place</description>
+        <externalId>false</externalId>
+        <label>Location</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <description>Current status of the activity</description>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Scheduled</fullName>
+                    <default>true</default>
+                    <label>Scheduled</label>
+                </value>
+                <value>
+                    <fullName>In Progress</fullName>
+                    <default>false</default>
+                    <label>In Progress</label>
+                </value>
+                <value>
+                    <fullName>Completed</fullName>
+                    <default>false</default>
+                    <label>Completed</label>
+                </value>
+                <value>
+                    <fullName>Cancelled</fullName>
+                    <default>false</default>
+                    <label>Cancelled</label>
+                </value>
+                <value>
+                    <fullName>No Show</fullName>
+                    <default>false</default>
+                    <label>No Show</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Guest_Rating__c</fullName>
+        <description>Guest satisfaction rating for this activity (1-5 stars)</description>
+        <externalId>false</externalId>
+        <label>Guest Rating</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Notes__c</fullName>
+        <description>Additional notes or special requests for this activity</description>
+        <externalId>false</externalId>
+        <label>Notes</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+</CustomObject>

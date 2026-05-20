@@ -1,0 +1,41 @@
+<template>
+    <lightning-card title="Completed Stay Activities" icon-name="custom:custom63">
+        <div slot="actions">
+            <lightning-badge label={activityCount}></lightning-badge>
+        </div>
+        
+        <template if:true={isLoading}>
+            <div class="slds-p-around_medium">
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={error}>
+            <div class="slds-p-around_medium">
+                <p class="slds-text-color_error">
+                    Error loading activities: {error.body.message}
+                </p>
+            </div>
+        </template>
+
+        <template if:true={hasActivities}>
+            <lightning-datatable
+                key-field="Id"
+                data={completedActivities}
+                columns={columns}
+                hide-checkbox-column
+                show-row-number-column>
+            </lightning-datatable>
+        </template>
+
+        <template if:false={hasActivities}>
+            <template if:false={isLoading}>
+                <template if:false={error}>
+                    <div class="slds-p-around_medium slds-text-align_center">
+                        <p class="slds-text-color_weak">No completed activities found for this guest.</p>
+                    </div>
+                </template>
+            </template>
+        </template>
+    </lightning-card>
+</template>

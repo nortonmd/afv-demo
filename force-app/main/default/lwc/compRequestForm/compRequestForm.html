@@ -1,0 +1,162 @@
+<template>
+    <div class="comp-request-container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="header-title">Comp Requests</h1>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-section">
+            <p class="step-indicator">{stepIndicator}</p>
+            <lightning-progress-bar value={progressValue} size="medium"></lightning-progress-bar>
+        </div>
+
+        <!-- Step 1: Request Details -->
+        <template if:true={isStep1}>
+            <div class="form-card">
+                <!-- Illustration Placeholder -->
+                <div class="illustration-container">
+                    <lightning-icon icon-name="standard:reward" size="large" alternative-text="Comp Request"></lightning-icon>
+                </div>
+
+                <!-- Guest Search -->
+                <div class="form-field">
+                    <label class="form-label">Guest Name</label>
+                    <lightning-input
+                        type="search"
+                        value={guestSearchTerm}
+                        placeholder="Search for guest..."
+                        onchange={handleGuestSearch}
+                        class="custom-input">
+                    </lightning-input>
+                    
+                    <!-- Guest Dropdown -->
+                    <template if:true={showGuestDropdown}>
+                        <div class="dropdown-container">
+                            <template for:each={guestOptions} for:item="guest">
+                                <div key={guest.id} 
+                                     class="dropdown-item" 
+                                     data-id={guest.id}
+                                     onclick={handleGuestSelect}>
+                                    <div class="guest-name">{guest.name}</div>
+                                    <template if:true={guest.email}>
+                                        <div class="guest-detail">{guest.email}</div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Request Type -->
+                <div class="form-field">
+                    <label class="form-label">Type of Request</label>
+                    <lightning-combobox
+                        value={formData.requestType}
+                        placeholder="Select request type"
+                        options={requestTypeOptions}
+                        onchange={handleRequestTypeChange}
+                        class="custom-input">
+                    </lightning-combobox>
+                </div>
+
+                <!-- Amount -->
+                <div class="form-field">
+                    <label class="form-label">Comp Amount</label>
+                    <lightning-input
+                        type="number"
+                        value={formData.amount}
+                        placeholder="0.00"
+                        formatter="currency"
+                        step="0.01"
+                        min="0"
+                        onchange={handleAmountChange}
+                        class="custom-input">
+                    </lightning-input>
+                </div>
+
+                <!-- Comments -->
+                <div class="form-field">
+                    <label class="form-label">Comments</label>
+                    <lightning-textarea
+                        value={formData.comments}
+                        placeholder="Add any additional details..."
+                        onchange={handleCommentsChange}
+                        max-length="500"
+                        class="custom-input">
+                    </lightning-textarea>
+                </div>
+
+                <!-- Next Button -->
+                <div class="button-container">
+                    <lightning-button
+                        label="Next"
+                        variant="brand"
+                        onclick={handleNext}
+                        disabled={isNextDisabled}
+                        class="submit-button">
+                    </lightning-button>
+                </div>
+            </div>
+        </template>
+
+        <!-- Step 2: Review & Submit -->
+        <template if:true={isStep2}>
+            <div class="form-card">
+                <h2 class="section-title">Review Your Request</h2>
+                
+                <!-- Summary -->
+                <div class="summary-section">
+                    <div class="summary-row">
+                        <span class="summary-label">Guest:</span>
+                        <span class="summary-value">{formData.guestName}</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span class="summary-label">Request Type:</span>
+                        <span class="summary-value">{formData.requestType}</span>
+                    </div>
+                    
+                    <div class="summary-row highlight">
+                        <span class="summary-label">Amount:</span>
+                        <span class="summary-value amount">{formattedAmount}</span>
+                    </div>
+                    
+                    <template if:true={formData.comments}>
+                        <div class="summary-row full-width">
+                            <span class="summary-label">Comments:</span>
+                            <p class="summary-value">{formData.comments}</p>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Warning Message -->
+                <template if:true={showWarning}>
+                    <div class="warning-box">
+                        <lightning-icon icon-name="utility:warning" size="small" alternative-text="Warning"></lightning-icon>
+                        <p class="warning-text">
+                            This request exceeds $5,000 and will be sent to your manager for review.
+                        </p>
+                    </div>
+                </template>
+
+                <!-- Action Buttons -->
+                <div class="button-container-horizontal">
+                    <lightning-button
+                        label="Back"
+                        onclick={handleBack}
+                        class="secondary-button">
+                    </lightning-button>
+                    
+                    <lightning-button
+                        label="Submit Request"
+                        variant="brand"
+                        onclick={handleSubmit}
+                        disabled={isSubmitting}
+                        class="submit-button">
+                    </lightning-button>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>
