@@ -1,0 +1,198 @@
+name: Uncle Bob Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'force-app/**/*.cls'
+      - 'force-app/**/*.js'
+      - 'force-app/**/*.trigger'
+      - 'scripts/**/*.apex'
+
+jobs:
+  code-review:
+    name: Clean Code Review
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v41
+        with:
+          files: |
+            force-app/**/*.cls
+            force-app/**/*.js
+            force-app/**/*.trigger
+            scripts/**/*.apex
+
+      - name: Uncle Bob's Code Review
+        id: review
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          echo "## 🔍 Uncle Bob's Code Review" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          EXIT_CODE=0
+          VIOLATIONS_FOUND=false
+          
+          # Review each changed file
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "### 📄 Reviewing: \`$file\`" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            # Check file size (functions should be small)
+            LINES=$(wc -l < "$file")
+            if [ "$LINES" -gt 500 ]; then
+              echo "⚠️ **File Length Violation**: This file has $LINES lines. Files over 500 lines are harder to maintain. Consider splitting into smaller, focused modules." >> $GITHUB_STEP_SUMMARY
+              VIOLATIONS_FOUND=true
+            fi
+            
+            # Check for common code smells
+            ISSUES=""
+            
+            # Check for long method names (potential complexity)
+            if grep -q "^[[:space:]]*\(public\|private\|protected\|global\)[[:space:]].*{$" "$file"; then
+              METHOD_COUNT=$(grep -c "^[[:space:]]*\(public\|private\|protected\|global\)[[:space:]].*{$" "$file" || echo "0")
+              if [ "$METHOD_COUNT" -gt 20 ]; then
+                ISSUES="${ISSUES}⚠️ **Too Many Methods**: $METHOD_COUNT methods detected. This class is doing too much. Single Responsibility Principle violation.\n\n"
+                VIOLATIONS_FOUND=true
+              fi
+            fi
+            
+            # Check for commented code
+            COMMENTED_LINES=$(grep -E "^[[:space:]]*//" "$file" | grep -v "^[[:space:]]*//[[:space:]]*\(TODO\|FIXME\|NOTE\)" | wc -l || echo "0")
+            if [ "$COMMENTED_LINES" -gt 10 ]; then
+              ISSUES="${ISSUES}⚠️ **Commented Code**: Found $COMMENTED_LINES comment lines. Delete it—that's what version control is for. This isn't a museum.\n\n"
+              VIOLATIONS_FOUND=true
+            fi
+            
+            # Check for TODO comments (technical debt)
+            TODO_COUNT=$(grep -c "TODO\|FIXME" "$file" || echo "0")
+            if [ "$TODO_COUNT" -gt 5 ]; then
+              ISSUES="${ISSUES}⚠️ **TODO Overload**: $TODO_COUNT TODO/FIXME comments. Either do it now or delete it. TODOs are promises you'll probably break.\n\n"
+              VIOLATIONS_FOUND=true
+            fi
+            
+            # Check for magic numbers (Apex specific)
+            if [[ "$file" == *.cls ]] || [[ "$file" == *.trigger ]]; then
+              MAGIC_NUMBERS=$(grep -oE "[^a-zA-Z0-9_][0-9]{2,}[^a-zA-Z0-9_]" "$file" | wc -l || echo "0")
+              if [ "$MAGIC_NUMBERS" -gt 10 ]; then
+                ISSUES="${ISSUES}⚠️ **Magic Numbers**: Found numeric literals. What do these numbers mean? Give them meaningful constant names.\n\n"
+                VIOLATIONS_FOUND=true
+              fi
+            fi
+            
+            # Check for nested conditionals (JavaScript/Apex)
+            NESTED_IFS=$(grep -E "if.*if.*if" "$file" | wc -l || echo "0")
+            if [ "$NESTED_IFS" -gt 0 ]; then
+              ISSUES="${ISSUES}⚠️ **Nested Conditionals**: Found $NESTED_IFS deeply nested conditionals. Extract methods. Use polymorphism. Do literally anything else.\n\n"
+              VIOLATIONS_FOUND=true
+            fi
+            
+            # Check for long parameter lists (Apex methods)
+            if [[ "$file" == *.cls ]]; then
+              LONG_PARAMS=$(grep -E "\([^)]*,[^)]*,[^)]*,[^)]*," "$file" | wc -l || echo "0")
+              if [ "$LONG_PARAMS" -gt 0 ]; then
+                ISSUES="${ISSUES}⚠️ **Long Parameter Lists**: Methods with 4+ parameters detected. Consider a parameter object or Builder pattern.\n\n"
+                VIOLATIONS_FOUND=true
+              fi
+            fi
+            
+            # Check for generic names (Manager, Handler, Processor, Util)
+            if [[ "$file" =~ (Manager|Handler|Processor|Utility|Util|Helper|Data|Info)\. ]]; then
+              ISSUES="${ISSUES}⚠️ **Generic Naming**: Filename contains 'Manager', 'Handler', or similar noise words. What does it actually DO? Name it properly.\n\n"
+              VIOLATIONS_FOUND=true
+            fi
+            
+            # Check for missing test coverage indicators (Apex classes without @isTest)
+            if [[ "$file" == *.cls ]] && ! grep -q "@isTest" "$file"; then
+              if ! ls "${file%.*}Test.cls" 2>/dev/null || ! ls "${file%.*}_Test.cls" 2>/dev/null; then
+                ISSUES="${ISSUES}⚠️ **Missing Tests**: No test class found. Untested code is legacy code. Professional developers write tests.\n\n"
+                VIOLATIONS_FOUND=true
+              fi
+            fi
+            
+            if [ -n "$ISSUES" ]; then
+              echo -e "$ISSUES" >> $GITHUB_STEP_SUMMARY
+              EXIT_CODE=1
+            else
+              echo "✅ **No violations detected** - Clean code! The Boy Scout Rule approves." >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            echo "" >> $GITHUB_STEP_SUMMARY
+          done
+          
+          # Final verdict
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          if [ "$VIOLATIONS_FOUND" = true ]; then
+            echo "## ❌ Code Review Failed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Uncle Bob says: This code needs work before it can be merged. Fix the violations above." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "> *Clean code is not about following rules dogmatically. It's about making life easier for the next developer—who might be you, six months from now, after you've forgotten everything.*" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "## ✅ Code Review Passed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Uncle Bob approves! This code follows Clean Code principles." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "> *Remember the Boy Scout Rule: Leave the code cleaner than you found it.*" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Post review comment
+        if: steps.changed-files.outputs.any_changed == 'true' && failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🔍 Uncle Bob's Code Review: Changes Requested
+
+This PR has code quality issues that need to be addressed before merging. Check the workflow summary for detailed feedback.
+
+### Common violations found:
+- Long methods or classes (violates Single Responsibility Principle)
+- Magic numbers without meaningful names
+- Deeply nested conditionals (poor readability)
+- Generic class names (Manager, Handler, etc.)
+- Missing test coverage
+
+### Remember:
+> "Clean code is simple and direct. Clean code reads like well-written prose." - Robert C. Martin
+
+Please review the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for specific issues and fix them before requesting another review.
+
+*Following Clean Code principles makes your code maintainable at 2 AM during production outages. Your future self will thank you.*`
+            })
+
+      - name: Set check status
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const conclusion = '${{ job.status }}' === 'success' ? 'success' : 'failure';
+            await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'Uncle Bob Code Review',
+              head_sha: context.payload.pull_request.head.sha,
+              status: 'completed',
+              conclusion: conclusion,
+              output: {
+                title: conclusion === 'success' ? 'Clean Code ✅' : 'Code Smells Detected ❌',
+                summary: conclusion === 'success' 
+                  ? 'This code follows Clean Code principles and is ready to merge.'
+                  : 'Code quality issues detected. Please review and address the violations.'
+              }
+            });
