@@ -159,21 +159,21 @@ jobs:
               repo: context.repo.repo,
               body: `## 🔍 Uncle Bob's Code Review: Changes Requested
 
-This PR has code quality issues that need to be addressed before merging. Check the workflow summary for detailed feedback.
+            This PR has code quality issues that need to be addressed before merging. Check the workflow summary for detailed feedback.
 
-### Common violations found:
-- Long methods or classes (violates Single Responsibility Principle)
-- Magic numbers without meaningful names
-- Deeply nested conditionals (poor readability)
-- Generic class names (Manager, Handler, etc.)
-- Missing test coverage
+            ### Common violations found:
+            - Long methods or classes (violates Single Responsibility Principle)
+            - Magic numbers without meaningful names
+            - Deeply nested conditionals (poor readability)
+            - Generic class names (Manager, Handler, etc.)
+            - Missing test coverage
 
-### Remember:
-> "Clean code is simple and direct. Clean code reads like well-written prose." - Robert C. Martin
+            ### Remember:
+            > "Clean code is simple and direct. Clean code reads like well-written prose." - Robert C. Martin
 
-Please review the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for specific issues and fix them before requesting another review.
+            Please review the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for specific issues and fix them before requesting another review.
 
-*Following Clean Code principles makes your code maintainable at 2 AM during production outages. Your future self will thank you.*`
+            *Following Clean Code principles makes your code maintainable at 2 AM during production outages. Your future self will thank you.*`
             })
 
       - name: Set check status
