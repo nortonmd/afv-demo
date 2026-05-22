@@ -1,3 +1,6 @@
+/* 
+ * Control the Foo
+ */
 public with sharing class FooController {
     
     // Violation: Bad naming, unhelpful comments, and exposed public mutable state
